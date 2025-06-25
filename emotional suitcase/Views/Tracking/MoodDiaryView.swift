@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MoodDiaryView: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     @Binding var showingAnalysis: Bool
     @State private var showingDiaryEditor = false
     @State private var selectedDate = Date()
@@ -12,7 +12,7 @@ struct MoodDiaryView: View {
                 // 心情日曆
                 SectionCard(title: "心情日曆") {
                     MoodCalendarView(
-                        trackingManager: trackingManager,
+                        viewModel: viewModel,
                         selectedDate: $selectedDate
                     )
                 }
@@ -20,9 +20,12 @@ struct MoodDiaryView: View {
                 // 今天的心情
                 SectionCard(title: "今天的心情", subtitle: "選擇你現在的感受") {
                     DailyMoodSelector(
-                        selectedMood: $trackingManager.currentMood,
+                        selectedMood: Binding(
+                            get: { viewModel.getMoodEntry(for: Date())?.mood ?? "" },
+                            set: { mood in viewModel.addMoodEntry(mood) }
+                        ),
                         onMoodSelected: { mood in
-                            trackingManager.addMoodEntry(mood)
+                            viewModel.addMoodEntry(mood)
                         }
                     )
                 }
@@ -71,7 +74,7 @@ struct MoodDiaryView: View {
         }
         .sheet(isPresented: $showingDiaryEditor) {
             MoodDiaryEditor(
-                trackingManager: trackingManager,
+                viewModel: viewModel,
                 selectedDate: selectedDate
             )
         }
@@ -80,7 +83,7 @@ struct MoodDiaryView: View {
 
 #Preview {
     MoodDiaryView(
-        trackingManager: TrackingDataManager(),
+        viewModel: TrackingViewModel(),
         showingAnalysis: .constant(false)
     )
     .background(AppColors.lightYellow)

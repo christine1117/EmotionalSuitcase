@@ -4,28 +4,6 @@ struct DailyCheckInResultView: View {
     let scores: DailyCheckInScores
     @Binding var isPresented: Bool
     
-    private var overallScore: Int {
-        (scores.physical + scores.mental + scores.emotional + scores.sleep + scores.appetite) / 5
-    }
-    
-    private var healthStatus: String {
-        switch overallScore {
-        case 90...100: return "極佳狀態"
-        case 80...89: return "良好狀態"
-        case 60...79: return "一般狀態"
-        case 40...59: return "需要關注"
-        default: return "需要調整"
-        }
-    }
-    
-    private var statusColor: Color {
-        switch overallScore {
-        case 80...100: return .green
-        case 60...79: return .orange
-        default: return .red
-        }
-    }
-    
     var body: some View {
         VStack(spacing: 0) {
             // 標題
@@ -125,10 +103,6 @@ struct DailyCheckInResultView: View {
         }
         .background(Color(red: 0.996, green: 0.953, blue: 0.780))
         .navigationBarHidden(true)
-        .onAppear {
-            // 保存數據到 DailyCheckInManager
-            DailyCheckInManager.shared.saveDailyCheckIn(scores: scores)
-        }
     }
     
     private func getHealthIndicators() -> [HealthIndicator] {

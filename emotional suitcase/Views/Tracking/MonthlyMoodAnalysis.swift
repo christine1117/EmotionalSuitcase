@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct MonthlyMoodAnalysisView: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var selectedMonth = Date()
     @State private var commonWords: [(String, Int)] = []
@@ -31,18 +31,18 @@ struct MonthlyMoodAnalysisView: View {
                                 .multilineTextAlignment(.leading)
                             
                             // 情緒分布圖
-                            EmotionDistributionChart(entries: getCurrentMonthEntries())
+                            EmotionDistributionChart(entries: viewModel.getCurrentMonthEntries(selectedMonth: selectedMonth))
                         }
                     }
                     
                     // 常用字分析
                     SectionCard(title: "常用字分析", subtitle: "本月日記關鍵詞彙") {
-                        CommonWordsAnalysis(commonWords: commonWords)
+                        CommonWordsAnalysis(commonWords: viewModel.analyzeCommonWords(selectedMonth: selectedMonth))
                     }
                     
                     // 情緒趨勢
                     SectionCard(title: "情緒趨勢") {
-                        MoodTrendChart(entries: getCurrentMonthEntries())
+                        MoodTrendChart(entries: viewModel.getCurrentMonthEntries(selectedMonth: selectedMonth))
                     }
                     
                     Spacer(minLength: 50)
@@ -61,55 +61,6 @@ struct MonthlyMoodAnalysisView: View {
                 }
             }
         }
-        .onAppear {
-            analyzeCommonWords()
-        }
-    }
-    
-    private func getCurrentMonthEntries() -> [MoodEntry] {
-        let calendar = Calendar.current
-        let month = calendar.component(.month, from: selectedMonth)
-        let year = calendar.component(.year, from: selectedMonth)
-        
-        return trackingManager.moodEntries.filter { entry in
-            let entryMonth = calendar.component(.month, from: entry.date)
-            let entryYear = calendar.component(.year, from: entry.date)
-            return entryMonth == month && entryYear == year
-        }
-    }
-    
-    private func analyzeCommonWords() {
-        let entries = getCurrentMonthEntries()
-        let allText = entries.map { $0.note }.joined(separator: " ")
-        
-        // 簡單的中文分詞和詞頻分析
-        let words = extractWords(from: allText)
-        let wordCounts = countWords(words)
-        
-        // 取前10個最常用的詞
-        commonWords = Array(wordCounts.sorted { $0.value > $1.value }.prefix(10))
-    }
-    
-    private func extractWords(from text: String) -> [String] {
-        // 移除標點符號，保留中文字符
-        let cleanText = text.replacingOccurrences(of: "[\\p{P}\\p{S}]", with: " ", options: .regularExpression)
-        
-        // 簡單分詞：以空白分隔，並過濾掉單字和常見停用詞
-        let stopWords = Set(["的", "了", "是", "在", "我", "你", "他", "她", "它", "們", "這", "那", "有", "沒", "很", "也", "都", "會", "要", "可以", "但是", "因為", "所以", "如果", "就是"])
-        
-        return cleanText.components(separatedBy: .whitespacesAndNewlines)
-            .compactMap { word in
-                let trimmed = word.trimmingCharacters(in: .whitespacesAndNewlines)
-                return trimmed.count > 1 && !stopWords.contains(trimmed) ? trimmed : nil
-            }
-    }
-    
-    private func countWords(_ words: [String]) -> [String: Int] {
-        var wordCounts: [String: Int] = [:]
-        for word in words {
-            wordCounts[word, default: 0] += 1
-        }
-        return wordCounts
     }
 }
 
@@ -321,5 +272,5 @@ struct MoodTrendChart: View {
 }
 
 #Preview {
-    MonthlyMoodAnalysisView(trackingManager: TrackingDataManager())
+    MonthlyMoodAnalysisView(viewModel: TrackingViewModel())
 }

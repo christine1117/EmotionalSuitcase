@@ -103,7 +103,7 @@ struct ChatInputView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
         }
-        .background(Color(red: 0.996, green: 0.953, blue: 0.780))
+        .background(AppColors.backgroundLight)
     }
 }
 
@@ -168,5 +168,5 @@ struct QuickReplyView: View {
         )
     }
     .padding()
-    .background(Color(red: 0.996, green: 0.953, blue: 0.780))
+    .background(AppColors.backgroundLight)
 }

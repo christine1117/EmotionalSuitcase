@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct ScaleTrackingView: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     @State private var selectedScale: ScaleType?
     @State private var showingScaleDetail = false
     @State private var showingPHQ9Test = false
@@ -22,7 +22,7 @@ struct ScaleTrackingView: View {
                         ForEach(ScaleType.allCases, id: \.self) { scale in
                             ScaleSelectionCard(
                                 scale: scale,
-                                lastRecord: getLastRecord(for: scale),
+                                lastRecord: viewModel.getLastRecord(for: scale),
                                 onTap: {
                                     // 連接到對應的測驗檔案
                                     switch scale {
@@ -52,7 +52,7 @@ struct ScaleTrackingView: View {
                         ForEach(ScaleType.allCases, id: \.self) { scale in
                             ScaleHistoryCard(
                                 scale: scale,
-                                records: getRecords(for: scale),
+                                records: viewModel.getRecords(for: scale),
                                 onTap: {
                                     selectedScale = scale
                                     showingScaleDetail = true
@@ -70,7 +70,7 @@ struct ScaleTrackingView: View {
             if let scale = selectedScale {
                 ScaleTrendAnalysisView(
                     scale: scale,
-                    records: getRecords(for: scale)
+                    records: viewModel.getRecords(for: scale)
                 )
             }
         }
@@ -88,22 +88,9 @@ struct ScaleTrackingView: View {
             RFQ8TestView(isPresented: $showingRFQ8Test)
         }
     }
-    
-    private func getLastRecord(for scale: ScaleType) -> ScaleRecord? {
-        return trackingManager.scaleRecords
-            .filter { $0.type == scale }
-            .sorted { $0.date > $1.date }
-            .first
-    }
-    
-    private func getRecords(for scale: ScaleType) -> [ScaleRecord] {
-        return trackingManager.scaleRecords
-            .filter { $0.type == scale }
-            .sorted { $0.date > $1.date }
-    }
 }
 
 #Preview {
-    ScaleTrackingView(trackingManager: TrackingDataManager())
+    ScaleTrackingView(viewModel: TrackingViewModel())
         .background(AppColors.lightYellow)
 }

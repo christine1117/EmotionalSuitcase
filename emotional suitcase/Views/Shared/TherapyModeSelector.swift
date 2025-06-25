@@ -63,7 +63,7 @@ struct TherapyModeCard: View {
                     Text(mode.displayName)
                         .font(.headline)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                        .foregroundColor(AppColors.brownDeep)
                     
                     Text(mode.description)
                         .font(.subheadline)
@@ -141,7 +141,7 @@ struct ModeIntroductionView: View {
                     Text(mode.displayName)
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                        .foregroundColor(AppColors.brownDeep)
                     
                     Text(mode.description)
                         .font(.subheadline)
@@ -155,7 +155,7 @@ struct ModeIntroductionView: View {
                 Text("特色功能：")
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                    .foregroundColor(AppColors.brownDeep)
                 
                 ForEach(features, id: \.self) { feature in
                     HStack(spacing: 8) {
@@ -196,7 +196,7 @@ struct ModeChangeConfirmationView: View {
                 Text("切換對話模式")
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                    .foregroundColor(AppColors.brownDeep)
                 
                 Text("您想要從 \(currentMode.displayName) 切換到 \(targetMode.displayName) 嗎？")
                     .font(.subheadline)
@@ -304,5 +304,5 @@ struct ModeChangeConfirmationView: View {
         )
     }
     .padding()
-    .background(Color(red: 0.996, green: 0.953, blue: 0.780))
+    .background(AppColors.backgroundLight)
 }

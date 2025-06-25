@@ -2,10 +2,7 @@ import SwiftUI
 
 struct PHQ9TestView: View {
     @Binding var isPresented: Bool
-    @State private var currentQuestion = 0
-    @State private var answers: [Int] = Array(repeating: 0, count: 9)
-    @State private var showingResult = false
-    
+    @ObservedObject var viewModel: PsychologicalTestsViewModel
     let questions = [
         "做事時提不起勁或沒有樂趣",
         "感到心情低落、沮喪或絕望",
@@ -17,33 +14,27 @@ struct PHQ9TestView: View {
         "動作或說話速度緩慢到別人已經察覺？或正好相反－煩躁或坐立不安、動來動去的情況更勝於平常",
         "有不如死掉或用某種方式傷害自己的念頭"
     ]
-    
     let options = ["完全沒有", "好幾天", "一半以上的天數", "幾乎每天"]
-    
     var body: some View {
         NavigationView {
-            if showingResult {
-                PHQ9ResultView(score: calculateScore(), isPresented: $isPresented)
+            if viewModel.isCompleted {
+                PHQ9ResultView(score: viewModel.calculatePHQ9Score(), isPresented: $isPresented)
             } else {
                 VStack(spacing: 20) {
-                    ProgressView(value: Double(currentQuestion + 1), total: Double(questions.count))
-                        .progressViewStyle(LinearProgressViewStyle(tint: Color(red: 0.4, green: 0.2, blue: 0.1)))
-                    
-                    Text("第 \(currentQuestion + 1) 題，共 \(questions.count) 題")
+                    ProgressView(value: Double(viewModel.currentStep + 1), total: Double(questions.count))
+                        .progressViewStyle(LinearProgressViewStyle(tint: AppColors.brownDeep))
+                    Text("第 \(viewModel.currentStep + 1) 題，共 \(questions.count) 題")
                         .font(.caption)
-                        .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1).opacity(0.7))
-                    
+                        .foregroundColor(AppColors.brownDeep.opacity(0.7))
                     VStack(alignment: .leading, spacing: 16) {
                         Text("在過去兩週內，您有多常被以下的問題所困擾：")
                             .font(.subheadline)
-                            .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
-                        
-                        Text(questions[currentQuestion])
+                            .foregroundColor(AppColors.brownDeep)
+                        Text(questions[viewModel.currentStep])
                             .font(.headline)
                             .foregroundColor(.red)
                             .multilineTextAlignment(.leading)
                     }
-                    
                     VStack(spacing: 12) {
                         ForEach(0..<options.count, id: \.self) { index in
                             Button(action: {
@@ -52,11 +43,11 @@ struct PHQ9TestView: View {
                                 HStack {
                                     Text(options[index])
                                         .font(.body)
-                                        .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                                        .foregroundColor(AppColors.brownDeep)
                                     Spacer()
                                     Text("(\(index)分)")
                                         .font(.caption)
-                                        .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1).opacity(0.6))
+                                        .foregroundColor(AppColors.brownDeep.opacity(0.6))
                                 }
                                 .padding()
                                 .background(Color.white)
@@ -65,7 +56,6 @@ struct PHQ9TestView: View {
                             }
                         }
                     }
-                    
                     Spacer()
                 }
                 .padding()
@@ -76,18 +66,12 @@ struct PHQ9TestView: View {
             }
         }
     }
-    
     private func selectAnswer(_ answer: Int) {
-        answers[currentQuestion] = answer
-        
-        if currentQuestion < questions.count - 1 {
-            currentQuestion += 1
+        viewModel.phq9Answers[viewModel.currentStep] = answer
+        if viewModel.currentStep < questions.count - 1 {
+            viewModel.currentStep += 1
         } else {
-            showingResult = true
+            viewModel.isCompleted = true
         }
-    }
-    
-    private func calculateScore() -> Int {
-        return answers.reduce(0, +)
     }
 }

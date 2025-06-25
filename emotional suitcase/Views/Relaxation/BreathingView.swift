@@ -2,10 +2,7 @@ import SwiftUI
 
 struct BreathingView: View {
     let configuration: TimerConfiguration
-    
-    @StateObject private var timerManager = TimerManager()
-    @StateObject private var breathingManager = BreathingManager()
-    @StateObject private var hrvManager = HRVManager.shared
+    @ObservedObject var viewModel: RelaxationViewModel
     
     @State private var showingTip = false
     @State private var currentTip: RelaxationTip?
@@ -18,7 +15,7 @@ struct BreathingView: View {
             LinearGradient(
                 gradient: Gradient(colors: [
                     Color(red: 0.996, green: 0.953, blue: 0.780),
-                    breathingManager.currentPhase.color.opacity(0.3)
+                    viewModel.breathingManager.currentPhase.color.opacity(0.3)
                 ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -29,7 +26,7 @@ struct BreathingView: View {
                 // 頂部控制欄 - 白底
                 HStack {
                     Button(action: {
-                        timerManager.stopTimer()
+                        viewModel.timerManager.stopTimer()
                         presentationMode.wrappedValue.dismiss()
                     }) {
                         Image(systemName: "xmark")
@@ -47,7 +44,7 @@ struct BreathingView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
                         
-                        Text(breathingManager.pattern.name)
+                        Text(viewModel.breathingManager.pattern.name)
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
@@ -55,13 +52,13 @@ struct BreathingView: View {
                     Spacer()
                     
                     Button(action: {
-                        if timerManager.timerState == .running {
-                            timerManager.pauseTimer()
-                        } else if timerManager.timerState == .paused {
-                            timerManager.resumeTimer()
+                        if viewModel.timerManager.timerState == .running {
+                            viewModel.timerManager.pauseTimer()
+                        } else if viewModel.timerManager.timerState == .paused {
+                            viewModel.timerManager.resumeTimer()
                         }
                     }) {
-                        Image(systemName: timerManager.timerState == .running ? "pause" : "play")
+                        Image(systemName: viewModel.timerManager.timerState == .running ? "pause" : "play")
                             .font(.title3)
                             .foregroundColor(.gray)
                             .padding(12)
@@ -77,39 +74,39 @@ struct BreathingView: View {
                 // 呼吸引導區域
                 VStack(spacing: 40) {
                     // 時間顯示
-                    Text(timerManager.formattedTimeRemaining)
+                    Text(viewModel.timerManager.formattedTimeRemaining)
                         .font(.title2)
                         .fontWeight(.medium)
                         .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
                     
                     // 呼吸引導圓圈
                     BreathingGuideView(
-                        phase: breathingManager.currentPhase,
-                        progress: breathingManager.phaseProgress,
-                        scale: breathingManager.circleScale
+                        phase: viewModel.breathingManager.currentPhase,
+                        progress: viewModel.breathingManager.phaseProgress,
+                        scale: viewModel.breathingManager.circleScale
                     )
                     
                     // 階段指示
                     VStack(spacing: 8) {
-                        Text(breathingManager.currentPhase.displayName)
+                        Text(viewModel.breathingManager.currentPhase.displayName)
                             .font(.title)
                             .fontWeight(.bold)
-                            .foregroundColor(breathingManager.currentPhase.color)
+                            .foregroundColor(viewModel.breathingManager.currentPhase.color)
                         
-                        Text(breathingManager.currentPhase.instruction)
+                        Text(viewModel.breathingManager.currentPhase.instruction)
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         
                         // 階段倒計時
-                        Text(String(format: "%.0f", breathingManager.phaseTimeRemaining))
+                        Text(String(format: "%.0f", viewModel.breathingManager.phaseTimeRemaining))
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundColor(breathingManager.currentPhase.color)
+                            .foregroundColor(viewModel.breathingManager.currentPhase.color)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 4)
                             .background(
                                 Capsule()
-                                    .fill(breathingManager.currentPhase.color.opacity(0.2))
+                                    .fill(viewModel.breathingManager.currentPhase.color.opacity(0.2))
                             )
                     }
                 }
@@ -117,7 +114,7 @@ struct BreathingView: View {
                 Spacer()
                 
                 // HRV 圖表區域（只有連接且開啟顯示才顯示）
-                if showHRV && hrvManager.isConnected {
+                if showHRV && viewModel.hrvManager.isConnected {
                     VStack(spacing: 12) {
                         HStack {
                             Text("心率變異性")
@@ -139,10 +136,10 @@ struct BreathingView: View {
                             
                             HStack(spacing: 8) {
                                 Circle()
-                                    .fill(hrvManager.hrvTrend.color)
+                                    .fill(viewModel.hrvManager.hrvTrend.color)
                                     .frame(width: 8, height: 8)
                                 
-                                Text(hrvManager.hrvTrend.description)
+                                Text(viewModel.hrvManager.hrvTrend.description)
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }

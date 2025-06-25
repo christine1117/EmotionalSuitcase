@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct MoodDiaryEditor: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     let selectedDate: Date
     @Environment(\.dismiss) private var dismiss
     
     @State private var diaryText = ""
-    @State private var selectedMood: MoodType = .neutral
+    @State private var selectedMood: String = ""
     
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -35,7 +35,7 @@ struct MoodDiaryEditor: View {
                     Spacer()
                     
                     Button("保存") {
-                        saveDiary()
+                        viewModel.addMoodEntry(selectedMood, note: diaryText, date: selectedDate)
                         dismiss()
                     }
                     .foregroundColor(AppColors.orange)
@@ -58,12 +58,8 @@ struct MoodDiaryEditor: View {
                                 .font(.headline)
                                 .foregroundColor(AppColors.darkBrown)
                             
-                            DailyMoodSelector(
-                                selectedMood: $selectedMood,
-                                onMoodSelected: { mood in
-                                    selectedMood = mood
-                                }
-                            )
+                            TextField("請輸入今天的心情...", text: $selectedMood)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
                         }
                         
                         // 日記內容
@@ -92,27 +88,17 @@ struct MoodDiaryEditor: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            loadExistingEntry()
+            if let existingEntry = viewModel.getMoodEntry(for: selectedDate) {
+                selectedMood = existingEntry.mood
+                diaryText = "" // 若有 note 欄位可帶入
+            }
         }
-    }
-    
-    private func loadExistingEntry() {
-        if let existingEntry = trackingManager.moodEntries.first(where: { entry in
-            Calendar.current.isDate(entry.date, inSameDayAs: selectedDate)
-        }) {
-            selectedMood = existingEntry.mood
-            diaryText = existingEntry.note
-        }
-    }
-    
-    private func saveDiary() {
-        trackingManager.addMoodEntry(selectedMood, note: diaryText)
     }
 }
 
 #Preview {
     MoodDiaryEditor(
-        trackingManager: TrackingDataManager(),
+        viewModel: TrackingViewModel(),
         selectedDate: Date()
     )
 }

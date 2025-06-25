@@ -2,10 +2,8 @@ import SwiftUI
 
 struct ChatDetailView: View {
     let session: ChatSession
-    @ObservedObject private var chatManager = ChatManager.shared
+    @StateObject private var viewModel = ChatViewModel()
     @State private var messageText = ""
-    @State private var selectedMode: TherapyMode
-    @State private var isTyping = false
     @State private var showingModeChangeConfirmation = false
     @State private var targetMode: TherapyMode?
     @State private var showingClearChatAlert = false
@@ -13,11 +11,10 @@ struct ChatDetailView: View {
     
     init(session: ChatSession) {
         self.session = session
-        self._selectedMode = State(initialValue: session.therapyMode)
     }
     
     private var messages: [ChatMessage] {
-        chatManager.getMessages(for: session.id)
+        viewModel.getMessages(for: session.id)
     }
     
     var body: some View {
@@ -25,9 +22,9 @@ struct ChatDetailView: View {
             // 標題欄
             ChatHeaderView(
                 session: session,
-                selectedMode: $selectedMode,
+                selectedMode: $viewModel.selectedMode,
                 onModeChange: { newMode in
-                    if newMode != selectedMode {
+                    if newMode != viewModel.selectedMode {
                         targetMode = newMode
                         showingModeChangeConfirmation = true
                     }
@@ -50,18 +47,18 @@ struct ChatDetailView: View {
                         }
                         
                         // 打字指示器
-                        if isTyping {
+                        if viewModel.isTyping {
                             HStack {
                                 HStack(alignment: .top, spacing: 8) {
                                     ZStack {
                                         Circle()
-                                            .fill(selectedMode.color.opacity(0.2))
+                                            .fill(viewModel.selectedMode.color.opacity(0.2))
                                             .frame(width: 40, height: 40)
                                         
-                                        Text(selectedMode.shortName)
+                                        Text(viewModel.selectedMode.shortName)
                                             .font(.caption)
                                             .fontWeight(.bold)
-                                            .foregroundColor(selectedMode.color)
+                                            .foregroundColor(viewModel.selectedMode.color)
                                     }
                                     
                                     TypingIndicatorView()
@@ -85,7 +82,7 @@ struct ChatDetailView: View {
                         }
                     }
                 }
-                .onChange(of: isTyping) { typing in
+                .onChange(of: viewModel.isTyping) { typing in
                     if typing {
                         withAnimation(.easeOut(duration: 0.3)) {
                             proxy.scrollTo("typing", anchor: .bottom)
@@ -98,10 +95,10 @@ struct ChatDetailView: View {
             ChatInputView(
                 messageText: $messageText,
                 onSend: sendMessage,
-                mode: selectedMode
+                mode: viewModel.selectedMode
             )
         }
-        .background(Color(red: 0.996, green: 0.953, blue: 0.780))
+        .background(AppColors.backgroundLight)
         .navigationBarHidden(true)
         .overlay(
             // 模式切換確認對話框
@@ -116,11 +113,11 @@ struct ChatDetailView: View {
                             }
                         
                         ModeChangeConfirmationView(
-                            currentMode: selectedMode,
+                            currentMode: viewModel.selectedMode,
                             targetMode: target,
                             onConfirm: {
-                                selectedMode = target
-                                chatManager.updateSessionMode(session.id, mode: target)
+                                viewModel.selectedMode = target
+                                viewModel.updateSessionMode(session.id, mode: target)
                                 showingModeChangeConfirmation = false
                                 targetMode = nil
                             },
@@ -145,9 +142,9 @@ struct ChatDetailView: View {
     }
     
     private func clearCurrentChat() {
-        chatManager.clearMessages(for: session.id)
+        viewModel.clearMessages(for: session.id)
         // 重新添加歡迎訊息
-        chatManager.addWelcomeMessage(to: session.id, mode: selectedMode)
+        viewModel.addWelcomeMessage(to: session.id, mode: viewModel.selectedMode)
     }
     
     private func sendMessage() {
@@ -155,21 +152,21 @@ struct ChatDetailView: View {
         guard !trimmedMessage.isEmpty else { return }
         
         // 添加用戶消息
-        chatManager.addMessage(to: session.id, content: trimmedMessage, isFromUser: true)
+        viewModel.addMessage(to: session.id, content: trimmedMessage, isFromUser: true)
         
         // 清空輸入框
         messageText = ""
         
         // 顯示打字指示器
-        isTyping = true
+        viewModel.isTyping = true
         
         // 模擬AI回覆延遲
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            isTyping = false
+            viewModel.isTyping = false
             
             // 生成AI回覆
-            let aiResponse = chatManager.generateAIResponse(for: trimmedMessage, mode: selectedMode)
-            chatManager.addMessage(to: session.id, content: aiResponse, isFromUser: false)
+            let aiResponse = viewModel.generateAIResponse(for: trimmedMessage, mode: viewModel.selectedMode)
+            viewModel.addMessage(to: session.id, content: aiResponse, isFromUser: false)
         }
     }
 }
@@ -195,7 +192,7 @@ struct ChatHeaderView: View {
                         Text("返回")
                             .font(.subheadline)
                     }
-                    .foregroundColor(Color(red: 0.8, green: 0.4, blue: 0.1))
+                    .foregroundColor(AppColors.orangeMain)
                 }
                 
                 Spacer()
@@ -204,7 +201,7 @@ struct ChatHeaderView: View {
                     Text(session.title)
                         .font(.headline)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                        .foregroundColor(AppColors.brownDeep)
                         .lineLimit(1)
                     
                     Text("最後活動: \(formatRelativeTime(session.lastUpdated))")

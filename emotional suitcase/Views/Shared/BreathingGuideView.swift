@@ -153,5 +153,5 @@ struct ParticleEffectView: View {
         )
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color(red: 0.996, green: 0.953, blue: 0.780))
+    .background(AppColors.backgroundLight)
 }

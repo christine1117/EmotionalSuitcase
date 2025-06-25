@@ -4,26 +4,6 @@ struct BSRS5ResultView: View {
     let score: Int
     @Binding var isPresented: Bool
     
-    var stressLevel: String {
-        switch score {
-        case 0...5: return "身心適應狀況良好"
-        case 6...9: return "輕度情緒困擾"
-        case 10...14: return "中度情緒困擾"
-        case 15...20: return "重度情緒困擾"
-        default: return "重度情緒困擾"
-        }
-    }
-    
-    var recommendation: String {
-        switch score {
-        case 0...5: return "您的身心適應狀況良好，請繼續保持。"
-        case 6...9: return "您有輕度情緒困擾，建議適度休息與放鬆。"
-        case 10...14: return "您有中度情緒困擾，建議尋求專業諮詢。"
-        case 15...20: return "您有重度情緒困擾，強烈建議尋求專業協助。"
-        default: return "請尋求專業協助。"
-        }
-    }
-    
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "list.clipboard.fill")
@@ -44,7 +24,7 @@ struct BSRS5ResultView: View {
                     .font(.system(size: 48, weight: .bold))
                     .foregroundColor(Color(red: 0.8, green: 0.4, blue: 0.1))
                 
-                Text(stressLevel)
+                Text("請尋求專業協助。")
                     .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
@@ -54,7 +34,7 @@ struct BSRS5ResultView: View {
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 4)
             
-            Text(recommendation)
+            Text("請尋求專業協助。")
                 .font(.body)
                 .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
                 .multilineTextAlignment(.center)

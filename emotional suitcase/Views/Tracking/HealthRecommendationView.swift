@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct HealthRecommendationView: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -121,5 +121,5 @@ struct HealthGoalItem: View {
 }
 
 #Preview {
-    HealthRecommendationView(trackingManager: TrackingDataManager())
+    HealthRecommendationView(viewModel: TrackingViewModel())
 }

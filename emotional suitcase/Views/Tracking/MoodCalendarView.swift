@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct MoodCalendarView: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     @Binding var selectedDate: Date
     @State private var currentMonth = Date()
     
@@ -49,59 +49,33 @@ struct MoodCalendarView: View {
                 }
             }
             
-            // 日期網格 - 只顯示當月日期
+            // 日期網格
+            let days = daysInMonth(for: currentMonth)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                ForEach(getDaysInCurrentMonth(), id: \.self) { date in
-                    if calendar.isDate(date, equalTo: currentMonth, toGranularity: .month) {
-                        // 當月日期
-                        CalendarDayView(
-                            date: date,
-                            isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
-                            moodEntry: getMoodEntry(for: date),
-                            onTap: {
-                                selectedDate = date
-                            }
-                        )
-                    } else {
-                        // 空白佔位符
-                        Color.clear
-                            .frame(width: 35, height: 35)
-                    }
+                ForEach(days, id: \.self) { date in
+                    CalendarDayView(
+                        date: date,
+                        isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
+                        moodEntry: viewModel.getMoodEntry(for: date),
+                        onTap: {
+                            selectedDate = date
+                        }
+                    )
                 }
             }
         }
     }
     
-    private func getDaysInCurrentMonth() -> [Date] {
-        guard let monthInterval = calendar.dateInterval(of: .month, for: currentMonth) else {
-            return []
-        }
-        
-        let firstOfMonth = monthInterval.start
-        let firstWeekday = calendar.component(.weekday, from: firstOfMonth)
-        
+    private func daysInMonth(for date: Date) -> [Date] {
+        let calendar = Calendar.current
+        guard let monthInterval = calendar.dateInterval(of: .month, for: date) else { return [] }
         var days: [Date] = []
-        
-        // 添加空白日期以對齊星期
-        for _ in 1..<firstWeekday {
-            days.append(Date.distantPast) // 使用特殊日期作為佔位符
+        var current = monthInterval.start
+        while current < monthInterval.end {
+            days.append(current)
+            current = calendar.date(byAdding: .day, value: 1, to: current) ?? current
         }
-        
-        // 添加當月的所有日期
-        let daysInMonth = calendar.range(of: .day, in: .month, for: currentMonth)?.count ?? 30
-        for i in 0..<daysInMonth {
-            if let date = calendar.date(byAdding: .day, value: i, to: firstOfMonth) {
-                days.append(date)
-            }
-        }
-        
         return days
-    }
-    
-    private func getMoodEntry(for date: Date) -> MoodEntry? {
-        return trackingManager.moodEntries.first { entry in
-            calendar.isDate(entry.date, inSameDayAs: date)
-        }
     }
     
     private func previousMonth() {
@@ -154,7 +128,7 @@ struct CalendarDayView: View {
 
 #Preview {
     MoodCalendarView(
-        trackingManager: TrackingDataManager(),
+        viewModel: TrackingViewModel(),
         selectedDate: .constant(Date())
     )
     .padding()

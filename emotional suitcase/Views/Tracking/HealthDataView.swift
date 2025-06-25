@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HealthDataView: View {
-    @ObservedObject var trackingManager: TrackingDataManager
+    @ObservedObject var viewModel: TrackingViewModel
     @Binding var showingRecommendations: Bool
     @State private var selectedWeek = Date()
     
@@ -31,7 +31,7 @@ struct HealthDataView: View {
                 // 健康指標網格
                 SectionCard(title: "本週數據") {
                     HealthMetricsGrid(
-                        healthMetrics: trackingManager.healthMetrics
+                        healthMetrics: viewModel.healthMetrics
                     )
                 }
                 
@@ -53,7 +53,7 @@ struct HealthDataView: View {
 
 #Preview {
     HealthDataView(
-        trackingManager: TrackingDataManager(),
+        viewModel: TrackingViewModel(),
         showingRecommendations: .constant(false)
     )
     .background(AppColors.lightYellow)

@@ -15,7 +15,7 @@ struct TimerControlView: View {
                 // 剩餘時間
                 Text(timerManager.formattedTimeRemaining)
                     .font(.system(size: 48, weight: .light, design: .rounded))
-                    .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
+                    .foregroundColor(AppColors.brownDeep)
                     .monospacedDigit()
                 
                 // 進度條
@@ -303,5 +303,5 @@ struct TimeAdjustmentView: View {
         )
         .padding()
     }
-    .background(Color(red: 0.996, green: 0.953, blue: 0.780))
+    .background(AppColors.backgroundLight)
 }
