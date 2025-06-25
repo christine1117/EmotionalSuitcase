@@ -1,4 +1,6 @@
 import SwiftUI
+import ViewModels.Relaxation.RelaxationViewModel
+import Models.RelaxationModels
 import "emotional suitcase/Views/Relaxation/Components/BreathingGuideView.swift"
 import "emotional suitcase/Views/Relaxation/Components/HRVChartView.swift"
 import "emotional suitcase/Views/Relaxation/Components/RelaxationTipsView.swift"
@@ -162,18 +164,18 @@ struct BreathingView: View {
                         Text("呼吸週期")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text("\(breathingManager.completedCycles)")
+                        Text("\(viewModel.breathingManager.completedCycles)")
                             .font(.headline)
                             .fontWeight(.semibold)
                             .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
                     }
                     
-                    if showHRV && hrvManager.isConnected {
+                    if showHRV && viewModel.hrvManager.isConnected {
                         VStack(spacing: 4) {
                             Text("當前HRV")
                                 .font(.caption)
                                 .foregroundColor(.gray)
-                            Text(String(format: "%.1f", hrvManager.currentHRV))
+                            Text(String(format: "%.1f", viewModel.hrvManager.currentHRV))
                                 .font(.headline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
@@ -184,7 +186,7 @@ struct BreathingView: View {
                         Text("進度")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text(String(format: "%.0f%%", timerManager.progress * 100))
+                        Text(String(format: "%.0f%%", viewModel.timerManager.progress * 100))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .foregroundColor(Color(red: 0.4, green: 0.2, blue: 0.1))
@@ -200,11 +202,11 @@ struct BreathingView: View {
                 HStack {
                     Spacer()
                     
-                    if !hrvManager.isConnected {
+                    if !viewModel.hrvManager.isConnected {
                         // 未連接 - 顯示連接按鈕
                         Button(action: {
                             withAnimation(.spring()) {
-                                hrvManager.connectDevice()
+                                viewModel.hrvManager.connectDevice()
                             }
                         }) {
                             HStack(spacing: 8) {
@@ -265,10 +267,10 @@ struct BreathingView: View {
         .onAppear {
             setupSession()
         }
-        .onChange(of: timerManager.elapsedMinutes) { oldValue, newValue in
+        .onChange(of: viewModel.timerManager.elapsedMinutes) { oldValue, newValue in
             checkForTips(at: newValue)
         }
-        .onReceive(timerManager.$timerState) { state in
+        .onReceive(viewModel.timerManager.$timerState) { state in
             if state == .completed {
                 completeSession()
             }
@@ -288,11 +290,11 @@ struct BreathingView: View {
     
     private func setupSession() {
         if let pattern = configuration.breathingPattern {
-            breathingManager.setPattern(pattern)
+            viewModel.breathingManager.setPattern(pattern)
         }
-        timerManager.configure(totalTime: configuration.totalSeconds)
-        timerManager.startTimer()
-        breathingManager.startBreathing()
+        viewModel.timerManager.configure(totalTime: configuration.totalSeconds)
+        viewModel.timerManager.startTimer()
+        viewModel.breathingManager.startBreathing()
     }
     
     private func checkForTips(at minutes: Int) {
@@ -307,7 +309,7 @@ struct BreathingView: View {
     }
     
     private func completeSession() {
-        breathingManager.stopBreathing()
+        viewModel.breathingManager.stopBreathing()
         presentationMode.wrappedValue.dismiss()
     }
 }

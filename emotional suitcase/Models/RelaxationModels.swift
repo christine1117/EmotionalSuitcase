@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // MARK: - 放鬆模式
 enum RelaxationMode: String, CaseIterable, Codable {
@@ -20,6 +21,21 @@ enum BreathingPhase: String, CaseIterable, Codable {
     case hold = "hold"
     case exhale = "exhale"
     case pause = "pause"
+}
+
+extension BreathingPhase {
+    var color: Color {
+        switch self {
+        case .inhale:
+            return AppColors.orange
+        case .hold:
+            return AppColors.yellowMain
+        case .exhale:
+            return AppColors.brownDeep
+        case .pause:
+            return AppColors.grayLight
+        }
+    }
 }
 
 // MARK: - 呼吸模式配置
