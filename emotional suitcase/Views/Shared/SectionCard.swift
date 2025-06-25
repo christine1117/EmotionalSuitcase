@@ -70,5 +70,5 @@ struct SectionCard<Content: View>: View {
         }
     }
     .padding()
-    .background(AppColors.lightYellow)
+    .background(AppColors.yellowLight)
 }

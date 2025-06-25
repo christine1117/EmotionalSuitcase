@@ -94,5 +94,5 @@ struct PersonalInfoCard: View {
         onMoodTap: {}
     )
     .padding()
-    .background(AppColors.lightYellow)
+    .background(AppColors.yellowLight)
 }

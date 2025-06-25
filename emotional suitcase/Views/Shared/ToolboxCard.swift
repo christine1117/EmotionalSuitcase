@@ -76,5 +76,5 @@ struct ToolboxCard: View {
         )
     }
     .padding()
-    .background(AppColors.lightYellow)
+    .background(AppColors.yellowLight)
 }

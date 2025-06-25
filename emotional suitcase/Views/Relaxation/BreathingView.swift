@@ -1,4 +1,7 @@
 import SwiftUI
+import "emotional suitcase/Views/Relaxation/Components/BreathingGuideView.swift"
+import "emotional suitcase/Views/Relaxation/Components/HRVChartView.swift"
+import "emotional suitcase/Views/Relaxation/Components/RelaxationTipsView.swift"
 
 struct BreathingView: View {
     let configuration: TimerConfiguration

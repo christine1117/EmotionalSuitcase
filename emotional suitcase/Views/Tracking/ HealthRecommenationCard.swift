@@ -36,7 +36,7 @@ struct HealthRecommendationCard: View {
             }
         }
         .padding()
-        .background(AppColors.orange.opacity(0.1))
+        .background(AppColors.yellowLight)
         .cornerRadius(12)
     }
 }

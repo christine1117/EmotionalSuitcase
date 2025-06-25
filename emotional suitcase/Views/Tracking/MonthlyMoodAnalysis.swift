@@ -49,7 +49,7 @@ struct MonthlyMoodAnalysisView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .background(AppColors.lightYellow)
+            .background(AppColors.yellowLight)
             .navigationTitle("月度分析")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

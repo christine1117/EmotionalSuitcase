@@ -50,7 +50,7 @@ struct ScaleDetailView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .background(AppColors.lightYellow)
+            .background(AppColors.yellowLight)
             .navigationTitle(scale.rawValue)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

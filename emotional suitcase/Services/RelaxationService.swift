@@ -23,12 +23,6 @@ final class RelaxationService: ObservableObject {
     }
 }
 
-struct RelaxationTip: Identifiable, Codable {
-    let id = UUID()
-    let title: String
-    let description: String
-}
-
 // MARK: - 計時器管理
 class TimerManager: ObservableObject {
     // ...（原 TimeBreathManager.swift 內容，已搬移）...

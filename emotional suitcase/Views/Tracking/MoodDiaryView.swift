@@ -78,6 +78,7 @@ struct MoodDiaryView: View {
                 selectedDate: selectedDate
             )
         }
+        .background(AppColors.yellowLight)
     }
 }
 
@@ -86,5 +87,5 @@ struct MoodDiaryView: View {
         viewModel: TrackingViewModel(),
         showingAnalysis: .constant(false)
     )
-    .background(AppColors.lightYellow)
+    .background(AppColors.yellowLight)
 }

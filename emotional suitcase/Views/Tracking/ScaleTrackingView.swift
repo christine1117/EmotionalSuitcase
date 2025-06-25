@@ -87,10 +87,11 @@ struct ScaleTrackingView: View {
         .sheet(isPresented: $showingRFQ8Test) {
             RFQ8TestView(isPresented: $showingRFQ8Test)
         }
+        .background(AppColors.yellowLight)
     }
 }
 
 #Preview {
     ScaleTrackingView(viewModel: TrackingViewModel())
-        .background(AppColors.lightYellow)
+        .background(AppColors.yellowLight)
 }

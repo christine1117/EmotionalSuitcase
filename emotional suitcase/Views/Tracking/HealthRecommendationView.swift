@@ -48,7 +48,7 @@ struct HealthRecommendationView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .background(AppColors.lightYellow)
+            .background(AppColors.yellowLight)
             .navigationTitle("健康建議")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
