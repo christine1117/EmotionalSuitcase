@@ -54,5 +54,5 @@ struct DailyReminderCard: View {
         onRefresh: {}
     )
     .padding()
-    .background(AppColors.yellowLight)
+    .background(AppColors.lightYellow)
 }

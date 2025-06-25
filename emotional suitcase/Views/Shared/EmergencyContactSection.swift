@@ -40,5 +40,5 @@ struct EmergencyContactSection: View {
 #Preview {
     EmergencyContactSection()
         .padding()
-        .background(AppColors.yellowLight)
+        .background(AppColors.lightYellow)
 }

@@ -11,6 +11,7 @@ struct AppColors {
     static let yellowAccent = Color(red: 0.98, green: 0.94, blue: 0.87) // #FAF0DE
     static let yellowStrong = Color(red: 1.0, green: 0.8, blue: 0.5) // #FFD980
     static let yellowMid = Color(red: 1.0, green: 0.6, blue: 0.3) // #FF9933
+    static let lightYellow = Color(red: 1.0, green: 0.98, blue: 0.8) // #FFFCCC（補回相容用）
     
     // 棕色系
     static let darkBrown = Color(red: 0.40, green: 0.26, blue: 0.13) // #664321

@@ -72,7 +72,7 @@ struct SupportPlanView: View {
                 }
                 .padding()
             }
-            .background(AppColors.yellowLight)
+            .background(AppColors.lightYellow)
             .navigationTitle("支援我的片刻")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

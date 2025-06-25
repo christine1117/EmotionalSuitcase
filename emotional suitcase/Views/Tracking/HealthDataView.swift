@@ -56,5 +56,5 @@ struct HealthDataView: View {
         viewModel: TrackingViewModel(),
         showingRecommendations: .constant(false)
     )
-    .background(AppColors.yellowLight)
+    .background(AppColors.lightYellow)
 }

@@ -62,7 +62,7 @@ struct SafeBoxTabView: View {
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
-        .background(AppColors.yellowLight)
+        .background(AppColors.lightYellow)
     }
 }
 

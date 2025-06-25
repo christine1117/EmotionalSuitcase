@@ -59,5 +59,5 @@ struct EmotionalToolboxSection: View {
         showingSafetyPlan: .constant(false)
     )
     .padding()
-    .background(AppColors.yellowLight)
+    .background(AppColors.lightYellow)
 }

@@ -80,7 +80,7 @@ struct ScaleTrendAnalysisView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .background(AppColors.yellowLight)
+            .background(AppColors.lightYellow)
             .navigationTitle("\(scale.rawValue) 趨勢分析")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

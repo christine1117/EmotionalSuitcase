@@ -152,7 +152,7 @@ struct SafetyPlanView: View {
                 }
                 .padding()
             }
-            .background(AppColors.yellowLight)
+            .background(AppColors.lightYellow)
             .navigationTitle("安全計畫")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

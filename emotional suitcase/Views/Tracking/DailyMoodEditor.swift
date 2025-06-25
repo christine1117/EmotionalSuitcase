@@ -83,7 +83,7 @@ struct MoodDiaryEditor: View {
                     }
                     .padding(.horizontal, 20)
                 }
-                .background(AppColors.yellowLight)
+                .background(AppColors.lightYellow)
             }
         }
         .navigationBarHidden(true)
